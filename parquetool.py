@@ -37,7 +37,7 @@ def main():
 
     # Head
     headCmdParser = subparsers.add_parser(
-        "head", help="Print the start of the Parquet contents"
+        "head", help="View the first N rows of the Parquet"
     )
     headCmdParser.add_argument("filePath", help="Path to the Parquet file")
     headCmdParser.add_argument(
@@ -53,7 +53,7 @@ def main():
 
     # Tail
     tailCmdParser = subparsers.add_parser(
-        "tail", help="Print the end of the Parquet contents"
+        "tail", help="View the last N rows of the Parquet"
     )
     tailCmdParser.add_argument("filePath", help="Path to the Parquet file")
     tailCmdParser.add_argument(

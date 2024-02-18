@@ -1,4 +1,6 @@
 # parquetool
+![Python version](https://img.shields.io/badge/python-v3.10+-blue)
+
 
 A command-line utility for previewing & analyzing [Apache Parquet](https://parquet.apache.org/) files
 
