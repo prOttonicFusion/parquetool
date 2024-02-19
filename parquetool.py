@@ -1,34 +1,5 @@
+import pqt.handlers as handlers
 import argparse
-import pandas as pd
-from pyarrow.parquet import ParquetFile, read_metadata, read_schema
-import pyarrow as pa
-
-
-def parquetToDataFrame(path: str) -> pd.DataFrame:
-    df = pd.read_parquet(path)
-    return df
-
-
-def headCmd(args):
-    pf = ParquetFile(args.filePath)
-    firstRows = next(pf.iter_batches(batch_size=args.row_count))
-    df = pa.Table.from_batches([firstRows]).to_pandas()
-    print(df.head(args.row_count))
-
-
-def tailCmd(args):
-    df = parquetToDataFrame(args.filePath)
-    print(df.tail(args.row_count))
-
-
-def metaCmd(args):
-    metadata = read_metadata(args.filePath)
-    print(metadata)
-
-
-def schemaCmd(args):
-    schema = read_schema(args.filePath)
-    print(schema)
 
 
 def main():
@@ -49,7 +20,7 @@ def main():
         type=int,
         default=5,
     )
-    headCmdParser.set_defaults(func=headCmd)
+    headCmdParser.set_defaults(func=handlers.headCmd)
 
     # Tail
     tailCmdParser = subparsers.add_parser(
@@ -65,19 +36,19 @@ def main():
         type=int,
         default=5,
     )
-    tailCmdParser.set_defaults(func=tailCmd)
+    tailCmdParser.set_defaults(func=handlers.tailCmd)
 
     # Meta
     metaCmdParser = subparsers.add_parser("meta", help="Print the Parquet metadata")
     metaCmdParser.add_argument("filePath", help="Path to the Parquet file")
-    metaCmdParser.set_defaults(func=metaCmd)
+    metaCmdParser.set_defaults(func=handlers.metaCmd)
 
     # Schema
     schemaCmdParser = subparsers.add_parser(
         "schema", help="Print the Parquet table schema"
     )
     schemaCmdParser.add_argument("filePath", help="Path to the Parquet file")
-    schemaCmdParser.set_defaults(func=schemaCmd)
+    schemaCmdParser.set_defaults(func=handlers.schemaCmd)
 
     args = parser.parse_args()
     args.func(args)

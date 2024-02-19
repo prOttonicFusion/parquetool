@@ -16,3 +16,10 @@ pip3 install -r requirements.txt
 ```sh
 python parquetool.py --help
 ```
+
+## Development
+
+Run tests:
+```sh
+python -m unittest discover -s tests
+```
