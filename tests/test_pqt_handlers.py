@@ -7,7 +7,7 @@ import pandas as pd
 from io import StringIO
 from pqt.handlers import headCmd, tailCmd, metaCmd, schemaCmd
 
-mockDf = pd.DataFrame({"A": [1, 2, 3], "B": [4.56, 5.67, 6.8910]})
+mockDf = pd.DataFrame({"A": [1, 2, 3, 4], "B": [1.1, 2.2, 3.3, 4.4]})
 
 samplePqt = "test_handlers.parquet"
 
@@ -38,7 +38,7 @@ class TestPqtUtils(unittest.TestCase):
     def assertInOutput(self, expectedOutputPart: str):
         self.assertIn(expectedOutputPart, self.capturedOutput.getvalue())
 
-    def test_headCmd(self):
+    def test_headCmd_lessRowsThanInFile(self):
         mockDf.to_parquet(samplePqt)
         headCmd(
             argparse.Namespace(
@@ -46,9 +46,19 @@ class TestPqtUtils(unittest.TestCase):
                 row_count=2,
             )
         )
-        self.assertOutput("A     B\n0  1  4.56\n1  2  5.67\n")
+        self.assertOutput("A    B\n0  1  1.1\n1  2  2.2")
 
-    def test_tailmd(self):
+    def test_headmd_moreRowsThanInFile(self):
+        mockDf.to_parquet(samplePqt)
+        headCmd(
+            argparse.Namespace(
+                filePath=samplePqt,
+                row_count=10,
+            )
+        )
+        self.assertOutput("A    B\n0  1  1.1\n1  2  2.2\n2  3  3.3\n3  4  4.4")
+
+    def test_tailmd_lessRowsThanInFile(self):
         mockDf.to_parquet(samplePqt)
         tailCmd(
             argparse.Namespace(
@@ -56,7 +66,17 @@ class TestPqtUtils(unittest.TestCase):
                 row_count=2,
             )
         )
-        self.assertOutput("A      B\n1  2  5.670\n2  3  6.891\n")
+        self.assertOutput("A    B\n0  3  3.3\n1  4  4.4")
+
+    def test_tailmd_moreRowsThanInFile(self):
+        mockDf.to_parquet(samplePqt)
+        tailCmd(
+            argparse.Namespace(
+                filePath=samplePqt,
+                row_count=10,
+            )
+        )
+        self.assertOutput("A    B\n0  1  1.1\n1  2  2.2\n2  3  3.3\n3  4  4.4")
 
     def test_metaCmd(self):
         mockDf.to_parquet(samplePqt)
@@ -66,7 +86,7 @@ class TestPqtUtils(unittest.TestCase):
             )
         )
         self.assertInOutput("num_columns: 2")
-        self.assertInOutput("num_rows: 3")
+        self.assertInOutput("num_rows: 4")
         self.assertInOutput("format_version:")
 
     def test_schemaCmd(self):
