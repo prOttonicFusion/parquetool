@@ -48,6 +48,14 @@ def main():
         "schema", help="Print the Parquet table schema"
     )
     schemaCmdParser.add_argument("filePath", help="Path to the Parquet file")
+    schemaCmdParser.add_argument(
+        "-m",
+        "--meta",
+        action="store_true",
+        dest="show_metadata",
+        help="Additionally output field and schema metadata",
+        default=False,
+    )
     schemaCmdParser.set_defaults(func=handlers.schemaCmd)
 
     args = parser.parse_args()

@@ -1,10 +1,10 @@
 import pyarrow as pa
 import pandas as pd
-from pyarrow.parquet import ParquetFile, read_metadata, read_schema
+import pyarrow.parquet as pq
 
 
 def headCmd(args):
-    pf = ParquetFile(args.filePath)
+    pf = pq.ParquetFile(args.filePath)
     firstRows = next(pf.iter_batches(batch_size=args.row_count))
     df = pa.Table.from_batches([firstRows]).to_pandas()
     print(df.head(args.row_count))
@@ -12,7 +12,7 @@ def headCmd(args):
 
 def tailCmd(args):
     n = args.row_count
-    parquetFile = ParquetFile(args.filePath)
+    parquetFile = pq.ParquetFile(args.filePath)
     rowGroupsCount = parquetFile.metadata.num_row_groups
     rowsRead = 0
     data = []
@@ -43,10 +43,16 @@ def tailCmd(args):
 
 
 def metaCmd(args):
-    metadata = read_metadata(args.filePath)
+    metadata = pq.read_metadata(args.filePath)
     print(metadata)
 
 
 def schemaCmd(args):
-    schema = read_schema(args.filePath)
-    print(schema)
+    schema = pq.read_schema(args.filePath)
+    print(
+        schema.to_string(
+            truncate_metadata=False,
+            show_field_metadata=args.show_metadata,
+            show_schema_metadata=args.show_metadata,
+        )
+    )
