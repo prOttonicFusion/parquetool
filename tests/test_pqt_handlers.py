@@ -66,7 +66,7 @@ class TestPqtUtils(unittest.TestCase):
                 row_count=2,
             )
         )
-        self.assertOutput("A    B\n0  3  3.3\n1  4  4.4")
+        self.assertOutput("A    B\n2  3  3.3\n3  4  4.4")
 
     def test_tailmd_moreRowsThanInFile(self):
         mockDf.to_parquet(samplePqt)

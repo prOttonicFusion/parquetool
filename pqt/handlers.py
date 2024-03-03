@@ -10,7 +10,6 @@ def headCmd(args):
     print(df.head(args.row_count))
 
 
-# TODO: show actual tail row indices in the output
 def tailCmd(args):
     n = args.row_count
     parquetFile = ParquetFile(args.filePath)
@@ -34,6 +33,11 @@ def tailCmd(args):
 
     # Concat the dataframes in reverse order since we read them from the end
     df = pd.concat(data[::-1], ignore_index=True)
+
+    # Shift the df index to match the actual parquet row numbers
+    rowCount = parquetFile.metadata.num_rows
+    if args.row_count < rowCount:
+        df.index += rowCount - n
 
     print(df.tail(args.row_count))
 
