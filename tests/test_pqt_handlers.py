@@ -91,10 +91,6 @@ class TestPqtUtils(unittest.TestCase):
 
     def test_schemaCmd(self):
         mockDf.to_parquet(samplePqt)
-        schemaCmd(
-            argparse.Namespace(
-                filePath=samplePqt,
-            )
-        )
+        schemaCmd(argparse.Namespace(filePath=samplePqt, show_metadata=False))
         self.assertInOutput("A: int64")
         self.assertInOutput("B: double")

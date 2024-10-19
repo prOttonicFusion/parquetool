@@ -19,7 +19,13 @@ python parquetool.py --help
 
 ## Development
 
-Run tests:
+Install the development dependencies using
 ```sh
-python -m unittest discover -s tests
+make dep-dev
+```
+after which you can test, lint and typecheck the code with
+```sh
+make test
+make lint
+make typecheck
 ```
